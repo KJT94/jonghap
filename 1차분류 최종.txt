@@ -1,0 +1,54 @@
+#include <Servo.h>
+Servo servo;
+
+#define trig 12
+#define echo 7
+int angle = 0;
+int sensing=0;
+int flag=0;
+long duration, distance;
+
+void setup(){
+  servo.attach(9);
+  Serial.begin(9600);
+  pinMode(trig, OUTPUT);
+  pinMode(echo, INPUT);
+  //servo.write(180);
+}
+void loop() {
+
+digitalWrite(trig, LOW);
+digitalWrite(echo, LOW);
+delayMicroseconds(2);
+digitalWrite(trig, HIGH);
+delayMicroseconds(10);
+digitalWrite(trig, LOW);
+
+duration = pulseIn(echo, HIGH);
+distance = ((float)(340 * duration) / 10000) /2; delay(1000);
+
+int sensorValue = analogRead(A0);
+  sensing=0;
+ 
+  if(distance<10){
+    flag=1;
+
+  }  
+    //if(sensorValue<=124)sensing=1;
+
+delay(100);
+  
+  if(flag){
+  
+    if(sensorValue<=124){
+    Serial.println("OK "); Serial.println("distance:");Serial.println(distance);Serial.println("metal sensor:"); Serial.println(sensorValue); servo.write(120); delay(1000); servo.write(90); servo.write(60);delay(1000);servo.write(90);
+    flag =0;
+   
+     }
+    if(sensorValue>124){
+   
+       Serial.println("NO "); Serial.println("distance:"); Serial.println(distance);  Serial.println("metal sensor:"); Serial.println(sensorValue); servo.write(60); delay(1000); servo.write(90); servo.write(120);delay(1000);servo.write(90);
+      flag=0;
+       }
+  }
+}
